@@ -1,0 +1,68 @@
+import { StringData } from '../types';
+
+export const bassStrings: StringData[] = [
+  {
+    openNote: 'G',
+    notes: [
+      { note: 'G#/Ab', frequency: 103.83, position: 1 },
+      { note: 'A', frequency: 110.00, position: 2 },
+      { note: 'A#/Bb', frequency: 116.54, position: 3 },
+      { note: 'B', frequency: 123.47, position: 4 },
+      { note: 'C', frequency: 130.81, position: 5 },
+      { note: 'C#/Db', frequency: 138.59, position: 6 },
+      { note: 'D', frequency: 146.83, position: 7 },
+      { note: 'D#/Eb', frequency: 155.56, position: 8 },
+      { note: 'E', frequency: 164.81, position: 9 },
+      { note: 'F', frequency: 174.61, position: 10 },
+      { note: 'F#/Gb', frequency: 185.00, position: 11 },
+    ],
+  },
+  {
+    openNote: 'D',
+    notes: [
+      { note: 'D#/Eb', frequency: 77.78, position: 1 },
+      { note: 'E', frequency: 82.41, position: 2 },
+      { note: 'F', frequency: 87.31, position: 3 },
+      { note: 'F#/Gb', frequency: 92.50, position: 4 },
+      { note: 'G', frequency: 98.00, position: 5 },
+      { note: 'G#/Ab', frequency: 103.83, position: 6 },
+      { note: 'A', frequency: 110.00, position: 7 },
+      { note: 'A#/Bb', frequency: 116.54, position: 8 },
+      { note: 'B', frequency: 123.47, position: 9 },
+      { note: 'C', frequency: 130.81, position: 10 },
+      { note: 'C#/Db', frequency: 138.59, position: 11 },
+    ],
+  },
+  {
+    openNote: 'A',
+    notes: [
+      { note: 'A#/Bb', frequency: 58.27, position: 1 },
+      { note: 'B', frequency: 61.74, position: 2 },
+      { note: 'C', frequency: 65.41, position: 3 },
+      { note: 'C#/Db', frequency: 69.30, position: 4 },
+      { note: 'D', frequency: 73.42, position: 5 },
+      { note: 'D#/Eb', frequency: 77.78, position: 6 },
+      { note: 'E', frequency: 82.41, position: 7 },
+      { note: 'F', frequency: 87.31, position: 8 },
+      { note: 'F#/Gb', frequency: 92.50, position: 9 },
+      { note: 'G', frequency: 98.00, position: 10 },
+      { note: 'G#/Ab', frequency: 103.83, position: 11 },
+    ],
+  },
+  {
+    openNote: 'E',
+    notes: [
+      { note: 'F', frequency: 43.65, position: 1 },
+      { note: 'F#/Gb', frequency: 46.25, position: 2 },
+      { note: 'G', frequency: 49.00, position: 3 },
+      { note: 'G#/Ab', frequency: 51.91, position: 4 },
+      { note: 'A', frequency: 55.00, position: 5 },
+      { note: 'A#/Bb', frequency: 58.27, position: 6 },
+      { note: 'B', frequency: 61.74, position: 7 },
+      { note: 'C', frequency: 65.41, position: 8 },
+      { note: 'C#/Db', frequency: 69.30, position: 9 },
+      { note: 'D', frequency: 73.42, position: 10 },
+      { note: 'D#/Eb', frequency: 77.78, position: 11 },
+    ],
+  },
+];
