@@ -1,23 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as Tone from 'tone';
 import { bassStrings } from './utils/bassNotes';
 import Fretboard from './components/Fretboard';
 import GameControls from './components/GameControls';
-import { FretboardState, GameState } from './types';
+import RankingDisplay from './components/RankingDisplay';
+import { FretboardState, GameState, RankingEntry } from './types';
+import { RANKING_STORAGE_KEY } from './utils/constants';
 
 function App() {
   const [synth, setSynth] = useState<Tone.Synth | null>(null);
-  const [gameState, setGameState] = useState<GameState>({
-    isPlaying: false,
-    score: 0,
-    total: 0,
-  });
+  const [playerName, setPlayerName] = useState<string>('');
+  const [showRanking, setShowRanking] = useState(false);
   
   const [fretboardState, setFretboardState] = useState<FretboardState>({
     selectedPositions: [],
     isCorrect: null,
     currentNote: null,
     targetPositions: 0,
+  });
+
+  const [gameState, setGameState] = useState<GameState>({
+    isPlaying: false,
+    score: 0,
+    total: 0,
+    timeLeft: 120, // valor padrão
   });
 
   useEffect(() => {
@@ -40,6 +46,25 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (gameState.isPlaying && gameState.timeLeft > 0) {
+      timer = setInterval(() => {
+        setGameState(prev => ({
+          ...prev,
+          timeLeft: prev.timeLeft - 1
+        }));
+      }, 1000);
+    } else if (gameState.timeLeft === 0 && gameState.isPlaying) {
+      handleGameOver();
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [gameState.isPlaying, gameState.timeLeft]);
+
   const generateRandomNote = () => {
     const allPositions = bassStrings.flatMap((string, stringIndex) => 
       string.notes.map((note, fretIndex) => ({
@@ -56,9 +81,33 @@ function App() {
     return { note: selectedNote, targetPositions };
   };
 
-  const startGame = () => {
+  const handleGameOver = useCallback(() => {
+    const playerNameInput = prompt('Digite seu nome para salvar a pontuação:');
+    if (playerNameInput) {
+      const ranking = JSON.parse(localStorage.getItem(RANKING_STORAGE_KEY) || '[]');
+      const newEntry = {
+        playerName: playerNameInput,
+        score: gameState.score,
+        date: new Date().toISOString(),
+        timeSpent: 120 - gameState.timeLeft // Corrigindo para mostrar o tempo gasto
+      };
+      
+      ranking.push(newEntry);
+      ranking.sort((a: RankingEntry, b: RankingEntry) => b.score - a.score);
+      localStorage.setItem(RANKING_STORAGE_KEY, JSON.stringify(ranking));
+    }
+    
+    stopGame();
+  }, [gameState.score, gameState.timeLeft]);
+
+  const startGame = (selectedTime: number) => {
     const { note, targetPositions } = generateRandomNote();
-    setGameState({ isPlaying: true, score: 0, total: 0 });
+    setGameState({
+      isPlaying: true,
+      score: 0,
+      total: 0,
+      timeLeft: selectedTime
+    });
     setFretboardState({
       selectedPositions: [],
       isCorrect: null,
@@ -68,7 +117,11 @@ function App() {
   };
 
   const stopGame = () => {
-    setGameState(prev => ({ ...prev, isPlaying: false }));
+    setGameState(prev => ({
+      ...prev,
+      isPlaying: false,
+      timeLeft: prev.timeLeft // Manter o último tempo selecionado
+    }));
     setFretboardState({
       selectedPositions: [],
       isCorrect: null,
@@ -159,6 +212,14 @@ function App() {
     }, 1500);
   };
 
+  const handleShowRanking = () => {
+    setShowRanking(true);
+  };
+
+  const handleCloseRanking = () => {
+    setShowRanking(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-8">
       <div className="max-w-[90rem] mx-auto px-4">
@@ -178,11 +239,19 @@ function App() {
               onStopGame={stopGame}
               onPlayNote={handlePlayNote}
               onConfirmAnswer={handleConfirmAnswer}
+              onShowRanking={handleShowRanking}
               gameState={gameState}
               fretboardState={fretboardState}
             />
           </div>
         </div>
+
+        <RankingDisplay
+          isOpen={showRanking}
+          onClose={handleCloseRanking}
+          currentScore={gameState.score}
+          timeSpent={gameState.timeLeft}
+        />
       </div>
     </div>
   );
